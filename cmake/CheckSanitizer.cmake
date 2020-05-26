@@ -1,0 +1,21 @@
+
+macro (CheckSanitizer)
+
+    if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+        set(MCX_SAN_LIST none address leak memory thread undefined)
+    elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
+        set(MCX_SAN_LIST none address leak memory thread undefined)
+    elseif (CMAKE_C_COMPILER_ID STREQUAL "AppleClang")
+        set(MCX_SAN_LIST none address thread undefined) 
+    else ()
+        set(MCX_SAN_LIST none)
+    endif ()
+    set (MCX_SANITIZER none CACHE STRING "Sanitizer to use (clang or gcc).")
+    set_property(CACHE MCX_SANITIZER PROPERTY STRINGS ${MCX_SAN_LIST})
+    mark_as_advanced (MCX_SANITIZER)
+
+    if (NOT MCX_SANITIZER STREQUAL "none")
+        set (MCX_C_FLAG_SANITIZER "-fsanitizer=${MCX_SANITIZER}")
+        message(STATUS "Enabling sanitizer: ${MCX_C_FLAG_SANITIZER}")
+    endif()
+endmacro ()
